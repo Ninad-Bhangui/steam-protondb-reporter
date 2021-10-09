@@ -28,6 +28,7 @@ async fn merge_details(
     apps: &Vec<schemas::SteamApp>,
 ) -> Result<Vec<schemas::CsvRow>, Box<dyn std::error::Error>> {
     let mut csv_rows: Vec<schemas::CsvRow> = Vec::new();
+    let protondb_client = protondb::ProtonDbClient::new().unwrap();
     for game in ownedgames {
         let name = apps
             .into_iter()
@@ -38,7 +39,7 @@ async fn merge_details(
             })
             .name
             .clone();
-        let proton_details = protondb::get_protondb_score(game.appid).await?;
+        let proton_details = protondb_client.get_protondb_score(game.appid).await?;
         let csv_row = schemas::CsvRow {
             appid: game.appid,
             name: name,
