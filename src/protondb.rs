@@ -1,13 +1,18 @@
 use super::schemas;
+#[cfg(test)]
+use mockito;
 
-static API_BASE_URL: &str = "https://www.protondb.com/api/v1";
 pub struct ProtonDbClient {
+    base_url: String,
     client: reqwest::Client,
 }
 impl ProtonDbClient {
-    pub fn new() -> reqwest::Result<Self> {
+    pub fn new(base_url: &str) -> reqwest::Result<Self> {
         let client = reqwest::Client::builder().build()?;
-        Ok(Self { client })
+        Ok(Self {
+            base_url: String::from(base_url),
+            client,
+        })
     }
 
     pub async fn get_protondb_score(
@@ -16,7 +21,7 @@ impl ProtonDbClient {
     ) -> Result<schemas::ProtonDbResponse, Box<dyn std::error::Error>> {
         let url = format!(
             "{api_base_url}/reports/summaries/{steamid}.json",
-            api_base_url = API_BASE_URL,
+            api_base_url = self.base_url,
             steamid = appid
         );
         let http_resp = self.client.get(url).send().await?;
@@ -34,5 +39,29 @@ impl ProtonDbClient {
                 best_reported_tier: None,
             }),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::schemas::ProtonDbResponse;
+    use mockito::mock;
+
+    use super::*;
+    #[tokio::test]
+    async fn test_details_available() {
+        let protondb_client = ProtonDbClient::new(&mockito::server_url()).unwrap();
+        let _mock = mock("GET", "/reports/summaries/999.json").with_status(200).with_header("content-type", "application/json").with_body(r#"{"confidence":"good","score":0.53,"tier":"gold","total":20,"trendingTier":"gold","bestReportedTier":"platinum"}"#).create();
+
+        let response = protondb_client.get_protondb_score(999).await;
+        let expected_result = ProtonDbResponse {
+            confidence: Some(format!("good")),
+            score: Some(0.53),
+            tier: Some(format!("gold")),
+            total: Some(20.0),
+            trending_tier: Some(format!("gold")),
+            best_reported_tier: Some(format!("platinum")),
+        };
+        assert_eq!(expected_result, response.unwrap());
     }
 }

@@ -33,7 +33,7 @@ pub struct GameDetails {
     pub playtime_linux_forever: u32,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct ProtonDbResponse {
     pub confidence: Option<String>,
