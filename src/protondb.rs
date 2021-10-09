@@ -9,7 +9,10 @@ pub struct ProtonDbClient {
 impl ProtonDbClient {
     pub fn new(base_url: &str) -> reqwest::Result<Self> {
         let client = reqwest::Client::builder().build()?;
-        Ok(Self { base_url: String::from(base_url), client })
+        Ok(Self {
+            base_url: String::from(base_url),
+            client,
+        })
     }
 
     pub async fn get_protondb_score(
@@ -41,13 +44,12 @@ impl ProtonDbClient {
 
 #[cfg(test)]
 mod tests {
-    use mockito::mock;
     use crate::schemas::ProtonDbResponse;
+    use mockito::mock;
 
     use super::*;
     #[tokio::test]
     async fn test_details_available() {
-
         let protondb_client = ProtonDbClient::new(&mockito::server_url()).unwrap();
         let _mock = mock("GET", "/reports/summaries/999.json").with_status(200).with_header("content-type", "application/json").with_body(r#"{"confidence":"good","score":0.53,"tier":"gold","total":20,"trendingTier":"gold","bestReportedTier":"platinum"}"#).create();
 
@@ -58,8 +60,8 @@ mod tests {
             tier: Some(format!("gold")),
             total: Some(20.0),
             trending_tier: Some(format!("gold")),
-            best_reported_tier: Some(format!("platinum"))
-          };
+            best_reported_tier: Some(format!("platinum")),
+        };
         assert_eq!(expected_result, response.unwrap());
     }
 }
