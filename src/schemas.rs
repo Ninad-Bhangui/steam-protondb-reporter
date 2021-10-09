@@ -44,7 +44,7 @@ pub struct ProtonDbResponse {
     pub best_reported_tier: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone,)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct CsvRow {
     pub appid: u32,
