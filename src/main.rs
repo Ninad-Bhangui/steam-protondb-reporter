@@ -25,14 +25,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 async fn merge_details(
-    ownedgames: &Vec<schemas::GameDetails>,
-    apps: &Vec<schemas::SteamApp>,
+    ownedgames: &[schemas::GameDetails],
+    apps: &[schemas::SteamApp],
 ) -> Result<Vec<schemas::CsvRow>, Box<dyn std::error::Error>> {
     let mut csv_rows: Vec<schemas::CsvRow> = Vec::new();
     let protondb_client = protondb::ProtonDbClient::new().unwrap();
     for game in ownedgames {
         let name = apps
-            .into_iter()
+            .iter()
             .find(|x| x.appid == game.appid)
             .unwrap_or(&schemas::SteamApp {
                 appid: 1,

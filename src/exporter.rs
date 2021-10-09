@@ -9,7 +9,7 @@ pub fn write_to_csv(rows: Vec<schemas::CsvRow>) -> Result<String, Box<dyn Error>
     for row in rows {
         wtr.serialize(row)?;
     }
-    return Ok(String::from_utf8(wtr.into_inner()?)?);
+    Ok(String::from_utf8(wtr.into_inner()?)?)
 }
 
 #[cfg(test)]
