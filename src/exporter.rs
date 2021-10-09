@@ -18,7 +18,7 @@ mod tests {
     #[test]
     fn write_normal() {
         let mut rows = Vec::new();
-        rows.push(schemas::CsvRow{
+        rows.push(schemas::CsvRow {
             appid: 1,
             name: format!("test game"),
             confidence: Some(format!("good")),
@@ -26,7 +26,7 @@ mod tests {
             tier: Some(format!("gold")),
             total: Some(20.0),
             trending_tier: Some(format!("gold")),
-            best_reported_tier: Some(format!("platinum"))
+            best_reported_tier: Some(format!("platinum")),
         });
         let expected_output = "appid,name,confidence,score,tier,total,trendingTier,bestReportedTier\n1,test game,good,0.5,gold,20.0,gold,platinum\n";
 
@@ -35,7 +35,7 @@ mod tests {
     #[test]
     fn write_missing_fields() {
         let mut rows = Vec::new();
-        rows.push(schemas::CsvRow{
+        rows.push(schemas::CsvRow {
             appid: 1,
             name: format!(""),
             confidence: Some(format!("good")),
@@ -43,7 +43,7 @@ mod tests {
             tier: Some(format!("gold")),
             total: Some(20.0),
             trending_tier: None,
-            best_reported_tier: Some(format!("platinum"))
+            best_reported_tier: Some(format!("platinum")),
         });
         let expected_output = "appid,name,confidence,score,tier,total,trendingTier,bestReportedTier\n1,,good,,gold,20.0,,platinum\n";
 
