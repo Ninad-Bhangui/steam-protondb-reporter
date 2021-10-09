@@ -43,7 +43,7 @@ async fn merge_details(
         let proton_details = protondb_client.get_protondb_score(game.appid).await?;
         let csv_row = schemas::CsvRow {
             appid: game.appid,
-            name: name,
+            name,
             confidence: proton_details.confidence,
             score: proton_details.score,
             tier: proton_details.tier,
