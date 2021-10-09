@@ -5,6 +5,7 @@ use std::error::Error;
 use csv::Writer;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct CsvRow {
     pub appid: u32,
     pub name: String,
@@ -12,8 +13,8 @@ pub struct CsvRow {
     pub score: Option<f32>,
     pub tier: Option<String>,
     pub total: Option<f32>,
-    pub trendingTier: Option<String>,
-    pub bestReportedTier: Option<String>,
+    pub trending_tier: Option<String>,
+    pub best_reported_tier: Option<String>,
 }
 
 pub fn write_to_csv(rows: Vec<CsvRow>) -> Result<String, Box<dyn Error>> {

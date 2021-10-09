@@ -31,7 +31,7 @@ async fn merge_details(
             .find(|x| x.appid == game.appid)
             .unwrap_or(&SteamApp {
                 appid: 1,
-                name: format!("Unknown"),
+                name: format!(""),
             })
             .name
             .clone();
@@ -43,8 +43,8 @@ async fn merge_details(
             score: proton_details.score,
             tier: proton_details.tier,
             total: proton_details.total,
-            trendingTier: proton_details.trendingTier,
-            bestReportedTier: proton_details.bestReportedTier,
+            trending_tier: proton_details.trending_tier,
+            best_reported_tier: proton_details.best_reported_tier,
         };
         csv_rows.push(csv_row);
     }

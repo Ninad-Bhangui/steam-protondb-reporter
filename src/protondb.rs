@@ -2,13 +2,14 @@ use core::fmt;
 use serde::Deserialize;
 use std::error::Error;
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct ProtonDbResponse {
     pub confidence: Option<String>,
     pub score: Option<f32>,
     pub tier: Option<String>,
     pub total: Option<f32>,
-    pub trendingTier: Option<String>,
-    pub bestReportedTier: Option<String>,
+    pub trending_tier: Option<String>,
+    pub best_reported_tier: Option<String>,
 }
 #[derive(Debug)]
 struct ProtonDbError;
@@ -40,8 +41,8 @@ pub async fn get_protondb_score(
                 score: None,
                 tier: None,
                 total: None,
-                trendingTier: None,
-                bestReportedTier: None,
+                trending_tier: None,
+                best_reported_tier: None,
             })
         }
     }
