@@ -24,3 +24,25 @@ pub fn write_to_csv(rows: Vec<CsvRow>) -> Result<String, Box<dyn Error>> {
     }
     return Ok(String::from_utf8(wtr.into_inner()?)?);
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn write_normal() {
+        let mut rows = Vec::new();
+        rows.push(CsvRow{
+            appid: 1,
+            name: format!("test game"),
+            confidence: Some(format!("good")),
+            score: Some(0.5),
+            tier: Some(format!("gold")),
+            total: Some(20.0),
+            trending_tier: Some(format!("gold")),
+            best_reported_tier: Some(format!("platinum"))
+        });
+        let expected_output = "appid,name,confidence,score,tier,total,trendingTier,bestReportedTier\n1,test game,good,0.5,gold,20.0,gold,platinum\n";
+
+        assert_eq!(expected_output, write_to_csv(rows).unwrap())
+    }
+}
