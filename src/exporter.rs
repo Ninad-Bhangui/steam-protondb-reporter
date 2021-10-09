@@ -45,4 +45,21 @@ mod tests {
 
         assert_eq!(expected_output, write_to_csv(rows).unwrap())
     }
+    #[test]
+    fn write_missing_fields() {
+        let mut rows = Vec::new();
+        rows.push(CsvRow{
+            appid: 1,
+            name: format!(""),
+            confidence: Some(format!("good")),
+            score: None,
+            tier: Some(format!("gold")),
+            total: Some(20.0),
+            trending_tier: None,
+            best_reported_tier: Some(format!("platinum"))
+        });
+        let expected_output = "appid,name,confidence,score,tier,total,trendingTier,bestReportedTier\n1,,good,,gold,20.0,,platinum\n";
+
+        assert_eq!(expected_output, write_to_csv(rows).unwrap())
+    }
 }
