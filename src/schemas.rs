@@ -33,7 +33,7 @@ pub struct GameDetails {
     pub playtime_linux_forever: u32,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct ProtonDbResponse {
     pub confidence: Option<String>,
@@ -44,7 +44,7 @@ pub struct ProtonDbResponse {
     pub best_reported_tier: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone,)]
 #[serde(rename_all = "camelCase")]
 pub struct CsvRow {
     pub appid: u32,
