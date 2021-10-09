@@ -1,23 +1,10 @@
-use serde::Deserialize;
-use serde::Serialize;
 use std::error::Error;
 
 use csv::Writer;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(rename_all = "camelCase")]
-pub struct CsvRow {
-    pub appid: u32,
-    pub name: String,
-    pub confidence: Option<String>,
-    pub score: Option<f32>,
-    pub tier: Option<String>,
-    pub total: Option<f32>,
-    pub trending_tier: Option<String>,
-    pub best_reported_tier: Option<String>,
-}
+use super::schemas;
 
-pub fn write_to_csv(rows: Vec<CsvRow>) -> Result<String, Box<dyn Error>> {
+pub fn write_to_csv(rows: Vec<schemas::CsvRow>) -> Result<String, Box<dyn Error>> {
     let mut wtr = Writer::from_writer(vec![]);
     for row in rows {
         wtr.serialize(row)?;
@@ -31,7 +18,7 @@ mod tests {
     #[test]
     fn write_normal() {
         let mut rows = Vec::new();
-        rows.push(CsvRow{
+        rows.push(schemas::CsvRow{
             appid: 1,
             name: format!("test game"),
             confidence: Some(format!("good")),
@@ -48,7 +35,7 @@ mod tests {
     #[test]
     fn write_missing_fields() {
         let mut rows = Vec::new();
-        rows.push(CsvRow{
+        rows.push(schemas::CsvRow{
             appid: 1,
             name: format!(""),
             confidence: Some(format!("good")),
