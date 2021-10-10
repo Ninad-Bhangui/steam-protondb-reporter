@@ -10,7 +10,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let start = Instant::now();
     let api_key = env::var("STEAM_API_KEY").unwrap();
     let args: Vec<String> = env::args().collect();
-    let steam_client = steam::SteamClient::new().unwrap();
+    let steam_client = steam::SteamClient::new("https://api.steampowered.com").unwrap();
     let steamid = args[1].clone();
     let (steamapps, ownedgames) = tokio::join!(
         steam_client.get_steam_app_list(),

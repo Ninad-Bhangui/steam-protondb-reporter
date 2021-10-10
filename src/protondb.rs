@@ -49,7 +49,7 @@ mod tests {
 
     use super::*;
     #[tokio::test]
-    async fn test_details_available() {
+    async fn test_get_protondb_score_available() {
         let protondb_client = ProtonDbClient::new(&mockito::server_url()).unwrap();
         let _mock = mock("GET", "/reports/summaries/999.json").with_status(200).with_header("content-type", "application/json").with_body(r#"{"confidence":"good","score":0.53,"tier":"gold","total":20,"trendingTier":"gold","bestReportedTier":"platinum"}"#).create();
 
