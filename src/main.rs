@@ -16,20 +16,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         steam_client.get_steam_app_list(),
         steam_client.get_steam_owned_games_list(&steamid, &api_key)
     );
-    let csv_rows = merge_details(&ownedgames?.response.games, &steamapps?.applist.apps).await?;
+    let steam_games = steamapps?.applist.apps;
+    let owned_games = ownedgames?.response.games;
+    let protondb_client = protondb::ProtonDbClient::new("https://www.protondb.com/api/v1").unwrap();
+    let owned_app_ids: Vec<u32> = owned_games.iter().map(|x| x.appid).collect();
+    let protondb_details = protondb_client.bulk_get_protondb_score(&owned_app_ids[..]).await?;
+    let csv_rows = merge_details(&owned_games[..], &steam_games[..], &protondb_details[..]).await?;
     let csv_data = exporter::write_to_csv(csv_rows);
     fs::write("export.csv", csv_data.unwrap()).expect("Unable to write to file");
     let duration = start.elapsed();
     println!("Time elapsed in expensive_function() is: {:?}", duration);
     Ok(())
 }
-
+    
 async fn merge_details(
     ownedgames: &[schemas::GameDetails],
     apps: &[schemas::SteamApp],
+    protondb_details: &[schemas::ProtonDbDetails]
 ) -> Result<Vec<schemas::CsvRow>, Box<dyn std::error::Error>> {
     let mut csv_rows: Vec<schemas::CsvRow> = Vec::new();
-    let protondb_client = protondb::ProtonDbClient::new("https://www.protondb.com/api/v1").unwrap();
     for game in ownedgames {
         let name = apps
             .iter()
@@ -40,16 +45,17 @@ async fn merge_details(
             })
             .name
             .clone();
-        let proton_details = protondb_client.get_protondb_score(game.appid).await?;
+        let new_proton_details = protondb_details.clone().to_owned();
+        let protondb_detail = new_proton_details.into_iter().find(|x| x.appid == game.appid).unwrap();
         let csv_row = schemas::CsvRow {
             appid: game.appid,
             name,
-            confidence: proton_details.confidence,
-            score: proton_details.score,
-            tier: proton_details.tier,
-            total: proton_details.total,
-            trending_tier: proton_details.trending_tier,
-            best_reported_tier: proton_details.best_reported_tier,
+            confidence: protondb_detail.proton_db_response.confidence,
+            score: protondb_detail.proton_db_response.score,
+            tier: protondb_detail.proton_db_response.tier,
+            total: protondb_detail.proton_db_response.total,
+            trending_tier: protondb_detail.proton_db_response.trending_tier,
+            best_reported_tier: protondb_detail.proton_db_response.best_reported_tier,
         };
         csv_rows.push(csv_row);
     }
