@@ -20,7 +20,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let owned_games = ownedgames?.response.games;
     let protondb_client = protondb::ProtonDbClient::new("https://www.protondb.com/api/v1").unwrap();
     let owned_app_ids: Vec<u32> = owned_games.iter().map(|x| x.appid).collect();
-    let protondb_details = protondb_client.bulk_get_protondb_score(&owned_app_ids[..]).await?;
+    let protondb_details = protondb_client
+        .bulk_get_protondb_score(&owned_app_ids[..])
+        .await?;
     let csv_rows = merge_details(&owned_games[..], &steam_games[..], &protondb_details[..]).await?;
     let csv_data = exporter::write_to_csv(csv_rows);
     fs::write("export.csv", csv_data.unwrap()).expect("Unable to write to file");
@@ -28,11 +30,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Time elapsed in expensive_function() is: {:?}", duration);
     Ok(())
 }
-    
+
 async fn merge_details(
     ownedgames: &[schemas::GameDetails],
     apps: &[schemas::SteamApp],
-    protondb_details: &[schemas::ProtonDbDetails]
+    protondb_details: &[schemas::ProtonDbDetails],
 ) -> Result<Vec<schemas::CsvRow>, Box<dyn std::error::Error>> {
     let mut csv_rows: Vec<schemas::CsvRow> = Vec::new();
     for game in ownedgames {
@@ -46,7 +48,10 @@ async fn merge_details(
             .name
             .clone();
         let new_proton_details = protondb_details.clone().to_owned();
-        let protondb_detail = new_proton_details.into_iter().find(|x| x.appid == game.appid).unwrap();
+        let protondb_detail = new_proton_details
+            .into_iter()
+            .find(|x| x.appid == game.appid)
+            .unwrap();
         let csv_row = schemas::CsvRow {
             appid: game.appid,
             name,

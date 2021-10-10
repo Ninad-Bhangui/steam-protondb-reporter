@@ -47,7 +47,7 @@ pub struct ProtonDbResponse {
 #[serde(rename_all = "camelCase")]
 pub struct ProtonDbDetails {
     pub appid: u32,
-    pub proton_db_response: ProtonDbResponse
+    pub proton_db_response: ProtonDbResponse,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]

@@ -1,7 +1,7 @@
 use super::schemas;
+use futures::future::join_all;
 #[cfg(test)]
 use mockito;
-use futures::future::join_all;
 
 pub struct ProtonDbClient {
     base_url: String,
@@ -25,36 +25,36 @@ impl ProtonDbClient {
             api_base_url = self.base_url,
             steamid = appid
         );
-        println!("Requesting for appid: {}",appid);
         let http_resp = self.client.get(url).send().await?;
         match http_resp.status() {
             reqwest::StatusCode::OK => {
                 let resp: schemas::ProtonDbResponse = http_resp.json().await?;
-                println!("Got response for appid: {}",appid);
                 Ok(schemas::ProtonDbDetails {
                     appid,
-                    proton_db_response: resp
+                    proton_db_response: resp,
                 })
             }
             _ => Ok(schemas::ProtonDbDetails {
                 appid: appid,
                 proton_db_response: schemas::ProtonDbResponse {
-                confidence: None,
-                score: None,
-                tier: None,
-                total: None,
-                trending_tier: None,
-                best_reported_tier: None,
-            }}),
+                    confidence: None,
+                    score: None,
+                    tier: None,
+                    total: None,
+                    trending_tier: None,
+                    best_reported_tier: None,
+                },
+            }),
         }
     }
     pub async fn bulk_get_protondb_score(
         &self,
-        appid_list: &[u32]) -> Result<Vec<schemas::ProtonDbDetails>, Box<dyn std::error::Error>> {
-            let futures = appid_list.iter().map(|x| self.get_protondb_score(*x));
-            let results = join_all(futures).await;
-            Ok(results.into_iter().map(|x| x.unwrap()).collect())
-        }
+        appid_list: &[u32],
+    ) -> Result<Vec<schemas::ProtonDbDetails>, Box<dyn std::error::Error>> {
+        let futures = appid_list.iter().map(|x| self.get_protondb_score(*x));
+        let results = join_all(futures).await;
+        Ok(results.into_iter().map(|x| x.unwrap()).collect())
+    }
 }
 
 #[cfg(test)]
@@ -72,13 +72,14 @@ mod tests {
         let expected_result = ProtonDbDetails {
             appid: 999,
             proton_db_response: ProtonDbResponse {
-            confidence: Some(format!("good")),
-            score: Some(0.53),
-            tier: Some(format!("gold")),
-            total: Some(20.0),
-            trending_tier: Some(format!("gold")),
-            best_reported_tier: Some(format!("platinum")),
-        }};
+                confidence: Some(format!("good")),
+                score: Some(0.53),
+                tier: Some(format!("gold")),
+                total: Some(20.0),
+                trending_tier: Some(format!("gold")),
+                best_reported_tier: Some(format!("platinum")),
+            },
+        };
         assert_eq!(expected_result, response.unwrap());
     }
     #[tokio::test]
@@ -87,26 +88,31 @@ mod tests {
         let _mock = mock("GET", "/reports/summaries/998.json").with_status(200).with_header("content-type", "application/json").with_body(r#"{"confidence":"good","score":0.53,"tier":"gold","total":20,"trendingTier":"gold","bestReportedTier":"platinum"}"#).create();
         let _mock_2 = mock("GET", "/reports/summaries/999.json").with_status(200).with_header("content-type", "application/json").with_body(r#"{"confidence":"good","score":0.53,"tier":"gold","total":20,"trendingTier":"gold","bestReportedTier":"platinum"}"#).create();
 
-        let response = protondb_client.bulk_get_protondb_score(&[998,999]).await;
-        let expected_result = vec![ProtonDbDetails {
-            appid: 998,
-            proton_db_response: ProtonDbResponse {
-            confidence: Some(format!("good")),
-            score: Some(0.53),
-            tier: Some(format!("gold")),
-            total: Some(20.0),
-            trending_tier: Some(format!("gold")),
-            best_reported_tier: Some(format!("platinum")),
-        }},ProtonDbDetails {
-            appid: 999,
-            proton_db_response: ProtonDbResponse {
-            confidence: Some(format!("good")),
-            score: Some(0.53),
-            tier: Some(format!("gold")),
-            total: Some(20.0),
-            trending_tier: Some(format!("gold")),
-            best_reported_tier: Some(format!("platinum")),
-        }}];
+        let response = protondb_client.bulk_get_protondb_score(&[998, 999]).await;
+        let expected_result = vec![
+            ProtonDbDetails {
+                appid: 998,
+                proton_db_response: ProtonDbResponse {
+                    confidence: Some(format!("good")),
+                    score: Some(0.53),
+                    tier: Some(format!("gold")),
+                    total: Some(20.0),
+                    trending_tier: Some(format!("gold")),
+                    best_reported_tier: Some(format!("platinum")),
+                },
+            },
+            ProtonDbDetails {
+                appid: 999,
+                proton_db_response: ProtonDbResponse {
+                    confidence: Some(format!("good")),
+                    score: Some(0.53),
+                    tier: Some(format!("gold")),
+                    total: Some(20.0),
+                    trending_tier: Some(format!("gold")),
+                    best_reported_tier: Some(format!("platinum")),
+                },
+            },
+        ];
         assert_eq!(expected_result, response.unwrap());
     }
 }
