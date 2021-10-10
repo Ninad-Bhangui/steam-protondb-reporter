@@ -20,7 +20,9 @@ This could have been much easier in python/node. But my intention was to practic
 2. The URL would be something like: https://steamcommunity.com/profiles/{account_id}/
 
 ### Compile and run in rust
-
+Set the following environment variables:
+1. STEAM_API_KEY
+2. EXPORT_PATH: the path where the csv will be exported to
 ```bash
 cargo run
 ```
