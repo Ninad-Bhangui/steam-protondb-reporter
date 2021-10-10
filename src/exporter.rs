@@ -16,7 +16,7 @@ pub fn write_to_csv(rows: Vec<schemas::CsvRow>) -> Result<String, Box<dyn Error>
 mod tests {
     use super::*;
     #[test]
-    fn write_normal() {
+    fn test_write_to_csv_with_all_fields_present() {
         let mut rows = Vec::new();
         rows.push(schemas::CsvRow {
             appid: 1,
@@ -33,7 +33,7 @@ mod tests {
         assert_eq!(expected_output, write_to_csv(rows).unwrap())
     }
     #[test]
-    fn write_missing_fields() {
+    fn test_write_to_csv_with_missing_fields() {
         let mut rows = Vec::new();
         rows.push(schemas::CsvRow {
             appid: 1,

@@ -1,30 +1,30 @@
 use serde::Deserialize;
 use serde::Serialize;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq)]
 pub struct AppListResponse {
     pub applist: AppList,
 }
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq)]
 pub struct AppList {
     pub apps: Vec<SteamApp>,
 }
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone, PartialEq)]
 pub struct SteamApp {
     pub appid: u32,
     pub name: String,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq)]
 pub struct OwnedGamesResponse {
     pub response: OwnedGamesInternalResponse,
 }
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq)]
 pub struct OwnedGamesInternalResponse {
     pub game_count: u32,
     pub games: Vec<GameDetails>,
 }
-#[derive(Deserialize, Debug, Clone, Copy)]
+#[derive(Deserialize, Debug, Clone, Copy, PartialEq)]
 pub struct GameDetails {
     pub appid: u32,
     pub playtime_forever: u32,
