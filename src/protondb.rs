@@ -35,7 +35,7 @@ impl ProtonDbClient {
                 })
             }
             _ => Ok(schemas::ProtonDbDetails {
-                appid: appid,
+                appid,
                 proton_db_response: schemas::ProtonDbResponse {
                     confidence: None,
                     score: None,

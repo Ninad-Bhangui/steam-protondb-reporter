@@ -47,7 +47,7 @@ async fn merge_details(
             })
             .name
             .clone();
-        let new_proton_details = protondb_details.clone().to_owned();
+        let new_proton_details = protondb_details.to_vec().clone();
         let protondb_detail = new_proton_details
             .into_iter()
             .find(|x| x.appid == game.appid)
