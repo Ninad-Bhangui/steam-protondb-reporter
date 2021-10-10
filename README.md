@@ -27,7 +27,5 @@ cargo run
 
 #### TODO
 1. Dockerfile setup
-2. Test cases
 3. Refactor and test cases
-4. Improve speed by better async / tokio::spawn
 5. create cli tool
