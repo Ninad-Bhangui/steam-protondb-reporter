@@ -36,14 +36,7 @@ impl ProtonDbClient {
             }
             _ => Ok(schemas::ProtonDbDetails {
                 appid,
-                proton_db_response: schemas::ProtonDbResponse {
-                    confidence: None,
-                    score: None,
-                    tier: None,
-                    total: None,
-                    trending_tier: None,
-                    best_reported_tier: None,
-                },
+                proton_db_response: schemas::ProtonDbResponse::create_empty_response(),
             }),
         }
     }

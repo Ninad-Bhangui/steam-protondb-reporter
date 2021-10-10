@@ -43,6 +43,18 @@ pub struct ProtonDbResponse {
     pub trending_tier: Option<String>,
     pub best_reported_tier: Option<String>,
 }
+impl ProtonDbResponse {
+    pub fn create_empty_response() -> ProtonDbResponse {
+        ProtonDbResponse {
+            confidence: None,
+            score: None,
+            tier: None,
+            total: None,
+            trending_tier: None,
+            best_reported_tier: None,
+        }
+    }
+}
 #[derive(Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct ProtonDbDetails {
