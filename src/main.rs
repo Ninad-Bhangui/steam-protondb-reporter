@@ -1,5 +1,5 @@
-use std::env;
-use std::fs;
+use std::{fs, path::PathBuf};
+mod config;
 mod exporter;
 mod protondb;
 mod schemas;
@@ -8,13 +8,11 @@ use std::time::Instant;
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let start = Instant::now();
-    let api_key = env::var("STEAM_API_KEY").unwrap();
-    let args: Vec<String> = env::args().collect();
+    let config = config::Config::get_config();
     let steam_client = steam::SteamClient::new("https://api.steampowered.com").unwrap();
-    let steamid = args[1].clone();
     let (steamapps, ownedgames) = tokio::join!(
         steam_client.get_steam_app_list(),
-        steam_client.get_steam_owned_games_list(&steamid, &api_key)
+        steam_client.get_steam_owned_games_list(&config.steamid, &config.api_key)
     );
     let steam_games = steamapps?.applist.apps;
     let owned_games = ownedgames?.response.games;
@@ -25,7 +23,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
     let csv_rows = merge_details(&owned_games[..], &steam_games[..], &protondb_details[..]).await?;
     let csv_data = exporter::write_to_csv(csv_rows);
-    fs::write("export.csv", csv_data.unwrap()).expect("Unable to write to file");
+    let mut export_path = PathBuf::new();
+    export_path.push(config.export_path);
+    export_path.push("export.csv");
+    fs::write(export_path, csv_data.unwrap()).expect("Unable to write to file");
     let duration = start.elapsed();
     println!("Time elapsed in expensive_function() is: {:?}", duration);
     Ok(())
