@@ -23,8 +23,10 @@ This could have been much easier in python/node. But my intention was to practic
 Set the following environment variables:
 1. STEAM_API_KEY
 2. EXPORT_PATH: the path where the csv will be exported to
+
+steamid should be passed as a command line argument. (I have chosen to keep it so because it is possible to generate exports of any public steam account using the same api key)
 ```bash
-cargo run
+cargo run {steamid}
 ```
 
 #### TODO
