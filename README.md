@@ -1,9 +1,6 @@
 # steam-protondb-reporter
 (WIP) Currently exports a csv of protondb scores of all games owned by a steam account.
 
-With valve launching the steam deck, Linux gaming might soon be a reality. However, it's not easy for someone who owns a lot of games on steam to get an idea about how many games owned would be reasonably compatible with proton. Steam does not show a protondb score as of now.
-This tool generates a csv report with steam game id, name, and protondb metrics taken from https://www.protondb.com/.
-
 This could have been much easier in python/node. But my intention was to practice rust on something I needed. Also wanted to try async rust via tokio. This is my first attempt at coding in rust (beyond following tutorials and easy exercism exercises)
 ## Steps to generate Report
 
