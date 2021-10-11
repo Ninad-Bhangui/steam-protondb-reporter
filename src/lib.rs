@@ -21,7 +21,8 @@ pub async fn run(config: Config) -> Result<(), Box<dyn std::error::Error>> {
     let protondb_details = protondb_client
         .bulk_get_protondb_score(&owned_app_ids[..])
         .await?;
-    let csv_rows = merge_details(&owned_games[..], &steam_games[..], &protondb_details[..]).unwrap();
+    let csv_rows =
+        merge_details(&owned_games[..], &steam_games[..], &protondb_details[..]).unwrap();
     let csv_data = exporter::write_to_csv(csv_rows);
     let mut export_path = PathBuf::new();
     export_path.push(config.export_path);
@@ -71,7 +72,7 @@ fn merge_details(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use schemas::{GameDetails,SteamApp, ProtonDbDetails, ProtonDbResponse, CsvRow};
+    use schemas::{CsvRow, GameDetails, ProtonDbDetails, ProtonDbResponse, SteamApp};
     #[test]
     fn test_merge_details() {
         let test_owned_games = vec![
@@ -90,7 +91,16 @@ mod tests {
                 playtime_mac_forever: 0,
             },
         ];
-        let test_steam_apps = vec![SteamApp{appid:998, name: String::from("Test Game 1")},SteamApp{appid:999, name: String::from("Test Game 2")}];
+        let test_steam_apps = vec![
+            SteamApp {
+                appid: 998,
+                name: String::from("Test Game 1"),
+            },
+            SteamApp {
+                appid: 999,
+                name: String::from("Test Game 2"),
+            },
+        ];
         let test_protondb_details = vec![
             ProtonDbDetails {
                 appid: 998,
@@ -115,27 +125,35 @@ mod tests {
                 },
             },
         ];
-        let expected_result = vec![CsvRow{
-            appid:998,
-            name: String::from("Test Game 1"),
-            confidence: Some(String::from("good")),
-            score: Some(0.53),
-            tier: Some(String::from("gold")),
-            total: Some(20.0),
-            trending_tier: Some(format!("gold")),
-            best_reported_tier: Some(String::from("platinum")),
-        }, CsvRow{
-            appid:999,
-            name: String::from("Test Game 2"),
-            confidence: Some(String::from("good")),
-            score: Some(0.53),
-            tier: Some(String::from("gold")),
-            total: Some(20.0),
-            trending_tier: Some(format!("gold")),
-            best_reported_tier: Some(String::from("platinum")),
-        }];
+        let expected_result = vec![
+            CsvRow {
+                appid: 998,
+                name: String::from("Test Game 1"),
+                confidence: Some(String::from("good")),
+                score: Some(0.53),
+                tier: Some(String::from("gold")),
+                total: Some(20.0),
+                trending_tier: Some(format!("gold")),
+                best_reported_tier: Some(String::from("platinum")),
+            },
+            CsvRow {
+                appid: 999,
+                name: String::from("Test Game 2"),
+                confidence: Some(String::from("good")),
+                score: Some(0.53),
+                tier: Some(String::from("gold")),
+                total: Some(20.0),
+                trending_tier: Some(format!("gold")),
+                best_reported_tier: Some(String::from("platinum")),
+            },
+        ];
 
-        let result = merge_details(&test_owned_games[..], &test_steam_apps[..], &test_protondb_details[..]).unwrap();
+        let result = merge_details(
+            &test_owned_games[..],
+            &test_steam_apps[..],
+            &test_protondb_details[..],
+        )
+        .unwrap();
         assert_eq!(expected_result, result);
     }
 }

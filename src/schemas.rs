@@ -61,7 +61,7 @@ pub struct ProtonDbDetails {
     pub appid: u32,
     pub proton_db_response: ProtonDbResponse,
 }
-#[derive(Serialize, Deserialize, Debug,PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct CsvRow {
     pub appid: u32,

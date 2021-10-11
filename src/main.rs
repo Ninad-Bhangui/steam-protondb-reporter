@@ -1,5 +1,5 @@
-use std::{process,env};
 use protondb_scanner::config::Config;
+use std::{env, process};
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
